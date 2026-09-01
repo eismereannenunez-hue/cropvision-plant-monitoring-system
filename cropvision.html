@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CropVision — Smarter Monitoring. Better Harvest.</title>
+<style>
+  :root{
+    --green-900:#0f3d24;
+    --green-800:#14492c;
+    --green-700:#1b5e3a;
+    --green-600:#217a45;
+    --green-500:#2e9153;
+    --green-400:#3fae63;
+    --green-100:#eaf6ee;
+    --green-50:#f4faf6;
+    --ink:#16241c;
+    --ink-soft:#5b6b62;
+    --line:#dfe9e2;
+    --paper:#ffffff;
+    --amber:#e08e2b;
+    --red:#c9482f;
+    --shadow: 0 1px 2px rgba(15,61,36,.06), 0 8px 24px rgba(15,61,36,.06);
+    --radius-lg: 18px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family: "Iowan Old Style","Palatino Linotype","Georgia",serif;
+    background: var(--green-50);
+    color: var(--ink);
+    -webkit-font-smoothing:antialiased;
+  }
+  .sans{ font-family: "Segoe UI","Helvetica Neue",Arial,sans-serif; }
+  h1,h2,h3,h4{ font-family:"Iowan Old Style","Palatino Linotype","Georgia",serif; margin:0; letter-spacing:-0.01em;}
+  p,span,div,button,input,select,textarea,label,td,th,li{ font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif; }
+  button{ cursor:pointer; font-weight:600; border:none; }
+  a{ text-decoration:none; color:inherit; }
+  ::selection{ background: var(--green-100); }
+
+  /* ---------- Top marketing nav ---------- */
+  .topnav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 40px; background:var(--paper); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:50;
+  }
+  .brand{ display:flex; align-items:center; gap:9px; font-weight:700; font-size:19px; color:var(--green-800); }
+  .brand .leaf{ width:22px; height:22px; }
+  .topnav nav{ display:flex; gap:30px; }
+  .topnav nav a{ font-size:14.5px; color:var(--ink); font-weight:500; padding:6px 2px; border-bottom:2px solid transparent; }
+  .topnav nav a:hover{ border-color: var(--green-400); }
+  .topnav .cta{ display:flex; gap:10px; }
+  .btn{ padding:10px 18px; border-radius:9px; font-size:14px; font-weight:600; transition:transform .12s ease, box-shadow .12s ease; }
+  .btn:active{ transform: translateY(1px); }
+  .btn-primary{ background:var(--green-700); color:#fff; }
+  .btn-primary:hover{ background:var(--green-600); }
+  .btn-ghost{ background:transparent; color:var(--ink); border:1px solid var(--line); }
+  .btn-ghost:hover{ border-color:var(--green-400); }
+  .btn-outline{ background:#fff; color:var(--green-700); border:1.5px solid var(--green-700); }
+  .btn-outline:hover{ background:var(--green-50); }
+  .btn-sm{ padding:7px 12px; font-size:13px; border-radius:7px; }
+  .btn-danger-text{ background:transparent; color:var(--red); padding:6px 10px; font-size:13px; }
+
+  /* ---------- Hero ---------- */
+  .hero{ position:relative; padding:70px 40px 60px; overflow:hidden; background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(63,174,99,.16), transparent 60%), var(--green-50); }
+  .hero-inner{ max-width:1240px; margin:0 auto; display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;}
+  .eyebrow{ color:var(--green-600); font-weight:700; letter-spacing:.02em; font-size:13.5px; margin-bottom:14px;}
+  .hero h1{ font-size:52px; line-height:1.08; color:var(--ink); }
+  .hero h1 .accent{ color:var(--green-600); display:block; }
+  .hero p.lede{ font-size:17px; color:var(--ink-soft); line-height:1.65; max-width:480px; margin:22px 0 30px;}
+  .hero-actions{ display:flex; gap:14px; }
+  .hero-art{ position:relative; border-radius:22px; overflow:hidden; box-shadow:var(--shadow); min-height:360px;
+    background: linear-gradient(160deg,#2c5a3a,#173a26); display:flex; align-items:center; justify-content:center;}
+  .hero-art svg{ width:100%; height:100%; }
+  .scan-tag{ position:absolute; top:26px; right:26px; background:#fff; border-radius:12px; padding:12px 16px; box-shadow:var(--shadow); font-size:13px; min-width:150px;}
+  .scan-tag .dot{ display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--red); margin-right:6px;}
+  .scan-tag b{ display:block; margin-top:2px; }
+  .feat-strip{ max-width:1240px; margin:56px auto 0; display:grid; grid-template-columns:repeat(4,1fr); gap:18px; padding:0 0;}
+  .feat-card{ background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); padding:22px 20px; }
+  .feat-card .ico{ width:34px; height:34px; border-radius:9px; background:var(--green-100); display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
+  .feat-card h4{ font-size:15.5px; margin-bottom:5px; }
+  .feat-card p{ font-size:13px; color:var(--ink-soft); line-height:1.5; margin:0;}
+  .strip-caption{ text-align:center; color:var(--ink-soft); font-size:13px; margin-top:30px; letter-spacing:.02em;}
+
+  .about-section{ max-width:1000px; margin:0 auto; padding:70px 40px 90px; }
+  .about-section h2{ font-size:30px; margin-bottom:14px; }
+  .about-section p{ font-size:15.5px; color:var(--ink-soft); line-height:1.7; max-width:680px; }
+  .pillars{ display:grid; grid-template-columns:repeat(4,1fr); gap:20px; margin-top:36px;}
+  .pillar{ text-align:center; }
+  .pillar .ico{ width:44px; height:44px; border-radius:50%; background:var(--green-100); margin:0 auto 10px; display:flex; align-items:center; justify-content:center;}
+  .pillar h4{ font-size:14.5px; }
+  .footer-note{ text-align:center; padding:26px; color:#fff; background:var(--green-800); font-size:13.5px; }
+
+  /* ---------- App shell ---------- */
+  .app-shell{ display:flex; min-height:100vh; }
+  .sidebar{ width:236px; background:var(--green-800); color:#e7f2ea; flex-shrink:0; display:flex; flex-direction:column; padding:20px 14px; position:sticky; top:0; height:100vh; }
+  .sidebar .brand{ color:#fff; padding:6px 10px 20px; font-size:17px; }
+  .sidebar .user{ display:flex; align-items:center; gap:10px; padding:10px; background:rgba(255,255,255,.06); border-radius:10px; margin-bottom:16px;}
+  .sidebar .user .av{ width:34px; height:34px; border-radius:50%; background:var(--green-500); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px;}
+  .sidebar .user .name{ font-size:13.5px; font-weight:600; }
+  .sidebar .user .role{ font-size:11.5px; color:#b9d3c3; }
+  .side-link{ display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:9px; font-size:14px; color:#cfe4d8; margin-bottom:2px; }
+  .side-link:hover{ background:rgba(255,255,255,.07); color:#fff; }
+  .side-link.active{ background:var(--green-500); color:#fff; }
+  .side-link .ic{ width:17px; text-align:center; opacity:.9; }
+  .side-bottom{ margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,.12); }
+
+  .main{ flex:1; padding:28px 34px 60px; max-width:1400px; }
+  .page-head{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:22px; gap:20px;}
+  .page-head h1{ font-size:26px; }
+  .page-head p{ color:var(--ink-soft); font-size:14px; margin-top:6px; max-width:560px;}
+  .weather-chip{ background:#fff; border:1px solid var(--line); border-radius:12px; padding:10px 16px; display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft); box-shadow:var(--shadow);}
+  .weather-chip b{ font-size:19px; color:var(--ink); }
+
+  .grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .grid-2{ display:grid; grid-template-columns:1.3fr 1fr; gap:18px; }
+  .stat-card{ background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); padding:18px 20px; display:flex; align-items:center; gap:14px; box-shadow:var(--shadow);}
+  .stat-card .ic{ width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+  .stat-card .num{ font-size:22px; font-weight:700; font-family:"Iowan Old Style",Georgia,serif; }
+  .stat-card .lbl{ font-size:12.5px; color:var(--ink-soft); }
+
+  .card{ background:#fff; border:1px solid var(--line); border-radius:var(--radius-md); padding:20px 22px; box-shadow:var(--shadow); }
+  .card h3{ font-size:16px; margin-bottom:14px; }
+  .card-flex-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;}
+  .thumb-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:14px;}
+  .thumb{ border-radius:10px; overflow:hidden; border:1px solid var(--line); }
+  .thumb .img{ height:78px; background-size:cover; background-position:center; }
+  .thumb .cap{ padding:8px 9px; }
+  .thumb .cap .name{ font-size:12.5px; font-weight:700; }
+  .thumb .cap .tag{ font-size:11px; margin-top:2px; }
+
+  .tag{ display:inline-block; padding:3px 10px; border-radius:20px; font-size:11.5px; font-weight:700; }
+  .tag-ripe{ background:#fdeceb; color:var(--red); }
+  .tag-near{ background:#fdf3e3; color:var(--amber); }
+  .tag-unripe{ background:var(--green-100); color:var(--green-700); }
+  .tag-ready{ background:#fdeceb; color:var(--red); }
+  .tag-monitoring{ background:#eaf0fd; color:#3454c9; }
+  .tag-fruiting{ background:#f3e9fb; color:#7a3fc9; }
+  .tag-flowering{ background:#fdf3e3; color:var(--amber); }
+  .tag-vegetative{ background:var(--green-100); color:var(--green-700); }
+  .tag-healthy{ background:var(--green-100); color:var(--green-700); }
+  .tag-attention{ background:#fdeceb; color:var(--red); }
+
+  .tabs{ display:flex; gap:6px; background:var(--green-100); border-radius:10px; padding:4px; width:max-content; margin-bottom:18px;}
+  .tab-btn{ padding:8px 18px; border-radius:8px; background:transparent; font-size:13.5px; color:var(--green-800); }
+  .tab-btn.active{ background:#fff; box-shadow:var(--shadow); }
+
+  .upload-box{ border:1.5px dashed var(--line); border-radius:14px; min-height:280px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; background:var(--green-50); overflow:hidden; position:relative;}
+  .upload-box img{ width:100%; height:100%; object-fit:cover; position:absolute; inset:0;}
+  .upload-box .hint{ color:var(--ink-soft); font-size:13.5px; z-index:1; text-align:center; padding:0 30px;}
+  .upload-box .hint b{ display:block; color:var(--ink); font-size:14.5px; margin-bottom:4px;}
+
+  .confidence-bar{ height:8px; background:var(--green-100); border-radius:6px; overflow:hidden; margin:10px 0;}
+  .confidence-fill{ height:100%; background: linear-gradient(90deg,var(--green-500),var(--green-700)); }
+
+  table{ width:100%; border-collapse:collapse; }
+  thead th{ text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); font-weight:700; padding:10px 12px; border-bottom:1px solid var(--line);}
+  tbody td{ padding:13px 12px; border-bottom:1px solid var(--line); font-size:13.8px; }
+  tbody tr:hover{ background:var(--green-50); }
+  .row-actions{ display:flex; gap:8px; }
+  .icon-btn{ width:28px; height:28px; border-radius:7px; background:var(--green-50); display:flex; align-items:center; justify-content:center; border:1px solid var(--line); font-size:13px;}
+  .icon-btn:hover{ background:var(--green-100); }
+
+  .modal-overlay{ position:fixed; inset:0; background:rgba(15,30,20,.45); display:flex; align-items:center; justify-content:center; z-index:200; padding:20px;}
+  .modal{ background:#fff; border-radius:16px; width:100%; max-width:520px; padding:26px 28px; box-shadow:0 30px 60px rgba(0,0,0,.25); max-height:88vh; overflow:auto;}
+  .modal h3{ font-size:18px; margin-bottom:18px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12.5px; font-weight:700; color:var(--ink-soft); margin-bottom:6px; }
+  .field input, .field select{ width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px; font-size:14px; background:#fbfdfc;}
+  .field input:focus, .field select:focus{ outline:2px solid var(--green-400); outline-offset:1px; }
+  .modal-actions{ display:flex; justify-content:flex-end; gap:10px; margin-top:20px; }
+
+  .rec-card{ display:flex; gap:16px; align-items:flex-start; }
+  .rec-card .ic-circle{ width:44px; height:44px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;}
+  .suggest-list{ list-style:none; padding:0; margin:10px 0 0; font-size:13px; color:var(--ink-soft);}
+  .suggest-list li{ margin-bottom:6px; padding-left:18px; position:relative; }
+  .suggest-list li:before{ content:"✓"; position:absolute; left:0; color:var(--green-600); font-weight:700;}
+
+  .toast{ position:fixed; bottom:26px; left:50%; transform:translateX(-50%); background:var(--green-800); color:#fff; padding:12px 22px; border-radius:10px; font-size:13.5px; box-shadow:var(--shadow); z-index:400; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-6px); }
+
+  .empty{ text-align:center; padding:40px 20px; color:var(--ink-soft); }
+  .empty .ic{ font-size:30px; margin-bottom:10px; }
+
+  .donut-wrap{ display:flex; align-items:center; gap:22px; }
+  .legend-dot{ width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:8px;}
+  .legend-row{ display:flex; align-items:center; justify-content:space-between; font-size:13px; margin-bottom:8px; }
+
+  .harvest-card{ display:flex; flex-direction:column; gap:14px; }
+  .harvest-card .top{ display:flex; align-items:center; gap:12px; }
+  .harvest-card .ic{ width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:19px; }
+
+  @media (max-width: 980px){
+    .hero-inner{ grid-template-columns:1fr; }
+    .feat-strip{ grid-template-columns:repeat(2,1fr); }
+    .app-shell{ flex-direction:column; }
+    .sidebar{ width:100%; height:auto; position:relative; flex-direction:row; flex-wrap:wrap; }
+    .grid-4{ grid-template-columns:repeat(2,1fr); }
+    .grid-2{ grid-template-columns:1fr; }
+    .pillars{ grid-template-columns:repeat(2,1fr); }
+  }
+
+  /* ---------- Animation ---------- */
+  @keyframes fadeSlideUp{ from{ opacity:0; transform:translateY(14px);} to{ opacity:1; transform:translateY(0);} }
+  @keyframes pageFade{ from{ opacity:0; transform:translateY(6px);} to{ opacity:1; transform:translateY(0);} }
+  @keyframes scanMove{ 0%{ transform:translateY(-110%);} 100%{ transform:translateY(110%);} }
+  @keyframes pulseSoft{ 0%{ opacity:.55;} 100%{ opacity:1;} }
+  @keyframes drawPath{ to{ stroke-dashoffset:0; } }
+  @keyframes growBar{ to{ transform:scaleY(1); } }
+  @keyframes fillBar{ from{ width:0; } to{ width:var(--target); } }
+  @keyframes modalIn{ from{ opacity:0; transform:translateY(10px) scale(.98);} to{ opacity:1; transform:translateY(0) scale(1);} }
+  @keyframes fadeIn{ from{ opacity:0;} to{ opacity:1;} }
+  @keyframes popIn{ from{ opacity:0; transform:scale(.9);} to{ opacity:1; transform:scale(1);} }
+
+  #root > *{ animation: pageFade .4s ease; }
+
+  .hero-anim > *{ opacity:0; animation:fadeSlideUp .6s ease forwards; }
+  .hero-anim .eyebrow{ animation-delay:.05s; }
+  .hero-anim h1{ animation-delay:.15s; }
+  .hero-anim p.lede{ animation-delay:.28s; }
+  .hero-anim .hero-actions{ animation-delay:.4s; }
+  .hero-art{ opacity:0; animation:fadeSlideUp .7s ease forwards; animation-delay:.22s; }
+  .feat-card{ opacity:0; animation:fadeSlideUp .5s ease forwards; }
+  .feat-strip .feat-card:nth-child(1){ animation-delay:.5s; }
+  .feat-strip .feat-card:nth-child(2){ animation-delay:.58s; }
+  .feat-strip .feat-card:nth-child(3){ animation-delay:.66s; }
+  .feat-strip .feat-card:nth-child(4){ animation-delay:.74s; }
+
+  .scan-overlay{ position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:1;}
+  .scan-line{ position:absolute; left:0; right:0; height:40%; background:linear-gradient(180deg, transparent, rgba(63,174,99,.45), transparent); animation:scanMove 1.15s linear infinite; }
+  .analyzing{ animation:pulseSoft 0.9s ease-in-out infinite alternate; }
+
+  .confidence-fill{ animation: fillBar 1.1s cubic-bezier(.2,.8,.2,1) forwards; width:0; }
+
+  .chart-path{ animation:drawPath 1.2s ease forwards; }
+  .chart-dot{ opacity:0; animation:popIn .3s ease forwards; }
+
+  .bar-rect{ transform-box:fill-box; transform-origin:bottom; transform:scaleY(0); animation:growBar .55s cubic-bezier(.2,.8,.2,1) forwards; }
+  .donut-seg{ opacity:0; animation:fadeIn .5s ease forwards; animation-delay:.2s; }
+
+  .modal-overlay{ animation:fadeIn .18s ease; }
+  .modal{ animation:modalIn .22s cubic-bezier(.2,.8,.2,1); }
+
+  .thumb{ opacity:0; animation:fadeSlideUp .4s ease forwards; }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* ======================= STORAGE / "DATABASE" LAYER ======================= */
+const DB_KEY_RECORDS = 'cropvision:records';
+const DB_KEY_CLASS = 'cropvision:classification-history';
+const DB_KEY_SETTINGS = 'cropvision:settings';
+
+async function dbGet(key, fallback){
+  try{
+    const r = await window.storage.get(key, false);
+    if(r && r.value !== undefined) return JSON.parse(r.value);
+    return fallback;
+  }catch(e){ return fallback; }
+}
+async function dbSet(key, value){
+  try{ await window.storage.set(key, JSON.stringify(value), false); }
+  catch(e){ console.error('storage set failed', e); }
+}
+
+function uid(){ return 'r' + Math.random().toString(36).slice(2,10); }
+
+function seedRecords(){
+  return [
+    { id: uid(), crop:'Tomato', variety:'Registered Variety A', datePlanted:'2027-01-15', plantCount:9,
+      growthStage:'Fruiting', ripeness:'Ripe', status:'Ready', height:62, leafCount:24, healthStatus:'Healthy',
+      trend:[{w:'Week 1',h:8},{w:'Week 2',h:19},{w:'Week 3',h:31},{w:'Week 4',h:44},{w:'Week 5',h:55},{w:'Week 6',h:62}] },
+    { id: uid(), crop:'Tomato', variety:'Registered Variety B', datePlanted:'2027-02-01', plantCount:7,
+      growthStage:'Flowering', ripeness:'Near Ripe', status:'Monitoring', height:38, leafCount:17, healthStatus:'Healthy',
+      trend:[{w:'Week 1',h:6},{w:'Week 2',h:14},{w:'Week 3',h:22},{w:'Week 4',h:29},{w:'Week 5',h:34},{w:'Week 6',h:38}] },
+    { id: uid(), crop:'Eggplant', variety:'Registered Variety A', datePlanted:'2027-01-20', plantCount:5,
+      growthStage:'Fruiting', ripeness:'Ripe', status:'Ready', height:58, leafCount:21, healthStatus:'Healthy',
+      trend:[{w:'Week 1',h:9},{w:'Week 2',h:20},{w:'Week 3',h:33},{w:'Week 4',h:45},{w:'Week 5',h:52},{w:'Week 6',h:58}] },
+    { id: uid(), crop:'Eggplant', variety:'Registered Variety B', datePlanted:'2027-02-10', plantCount:3,
+      growthStage:'Vegetative', ripeness:'Unripe', status:'Monitoring', height:22, leafCount:12, healthStatus:'Healthy',
+      trend:[{w:'Week 1',h:4},{w:'Week 2',h:9},{w:'Week 3',h:14},{w:'Week 4',h:18},{w:'Week 5',h:20},{w:'Week 6',h:22}] },
+  ];
+}
+
+/* ======================= APP STATE ======================= */
+let state = {
+  page: 'home',
+  monitorCrop: 'Tomato',
+  classifyCrop: 'Tomato',
+  analyticsTab: 'growth',
+  records: [],
+  classifications: [],
+  settings: { farmerName: 'Juan Dela Cruz' },
+  modal: null,        // {type:'add'|'edit', record}
+  selectedRecordId: null,
+  lastClassification: null,
+  loaded: false,
+};
+
+async function loadAll(){
+  let recs = await dbGet(DB_KEY_RECORDS, null);
+  if(!recs){ recs = seedRecords(); await dbSet(DB_KEY_RECORDS, recs); }
+  state.records = recs;
+  state.classifications = await dbGet(DB_KEY_CLASS, []);
+  state.settings = await dbGet(DB_KEY_SETTINGS, state.settings);
+  state.loaded = true;
+}
+async function saveRecords(){ await dbSet(DB_KEY_RECORDS, state.records); }
+async function saveClassifications(){ await dbSet(DB_KEY_CLASS, state.classifications); }
+async function saveSettings(){ await dbSet(DB_KEY_SETTINGS, state.settings); }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+function goTo(page){ state.page = page; render(); window.scrollTo(0,0); }
+window.goTo = goTo;
+
+/* ======================= SVG ICONS ======================= */
+const ICONS = {
+  leaf:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 4C10 4 4 10 4 18c0 1.1.9 2 2 2 8 0 14-6 14-16Z" stroke="currentColor" stroke-width="1.6"/><path d="M5 19 15 9" stroke="currentColor" stroke-width="1.6"/></svg>`,
+  grid:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="3" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="3" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/><rect x="13" y="13" width="8" height="8" rx="2" stroke="currentColor" stroke-width="1.6"/></svg>`,
+  camera:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 8h3l2-2h6l2 2h3v11H4Z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="13.5" r="3.3" stroke="currentColor" stroke-width="1.6"/></svg>`,
+  list:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 6h13M8 12h13M8 18h13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor"/></svg>`,
+  chart:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 20V10M12 20V4M20 20v-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  gear:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3.2" stroke="currentColor" stroke-width="1.6"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3.9a7 7 0 0 0-2-1.2L14.2 3H9.8l-.4 2.6a7 7 0 0 0-2 1.2l-2.3-.9-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-.9c.6.5 1.3.9 2 1.2l.4 2.6h4.4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.3.9 2-3.4-2-1.5c.1-.4.1-.8.1-1.2Z" stroke="currentColor" stroke-width="1.3"/></svg>`,
+  bulb:`<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6"/></svg>`,
+};
+
+/* ======================= HELPERS ======================= */
+function tagFor(kind, value){
+  const map = {
+    ripeness: {Ripe:'tag-ripe', 'Near Ripe':'tag-near', Unripe:'tag-unripe'},
+    status: {Ready:'tag-ready', Monitoring:'tag-monitoring'},
+    stage: {Fruiting:'tag-fruiting', Flowering:'tag-flowering', Vegetative:'tag-vegetative', Seedling:'tag-vegetative'},
+    health: {Healthy:'tag-healthy', 'Needs Attention':'tag-attention'},
+  };
+  const cls = (map[kind] && map[kind][value]) || 'tag-vegetative';
+  return `<span class="tag ${cls}">${value}</span>`;
+}
+function fmtDate(iso){
+  const d = new Date(iso+'T00:00:00');
+  return d.toLocaleDateString('en-US',{month:'short',day:'2-digit',year:'numeric'});
+}
+function cropEmoji(c){ return c==='Tomato' ? '🍅' : '🍆'; }
+function daysSince(iso){
+  const d = new Date(iso+'T00:00:00'); const now = new Date();
+  return Math.max(0, Math.round((now-d)/86400000));
+}
+function stageFromHeight(h){
+  if(h < 12) return 'Seedling';
+  if(h < 30) return 'Vegetative';
+  if(h < 50) return 'Flowering';
+  return 'Fruiting';
+}
+function activePlants(){ return state.records.reduce((s,r)=>s+r.plantCount,0); }
+function ripeCropsCount(){ return state.records.filter(r=>r.ripeness==='Ripe').reduce((s,r)=>s+r.plantCount,0); }
+function monitoringPlots(){ return state.records.filter(r=>r.status==='Monitoring').length; }
+
+function harvestWindow(ripeness){
+  if(ripeness==='Ripe') return {label:'Within 1–3 days', days:2};
+  if(ripeness==='Near Ripe') return {label:'Within 4–6 days', days:5};
+  return {label:'Within 10–14 days', days:12};
+}
+
+/* ======================= SVG CHARTS (vanilla) ======================= */
+function svgLineChart(points, opts){
+  opts = opts||{};
+  const w = opts.w||520, h = opts.h||190, pad=32;
+  const maxV = Math.max(10, ...points.map(p=>p.h)) * 1.15;
+  const stepX = (w - pad*1.4) / Math.max(1, points.length-1);
+  const coords = points.map((p,i)=>{
+    const x = pad + i*stepX;
+    const y = h - pad*0.7 - (p.h/maxV)*(h - pad*1.4);
+    return {x,y,...p};
+  });
+  const path = coords.map((c,i)=> (i===0?'M':'L')+c.x.toFixed(1)+','+c.y.toFixed(1)).join(' ');
+  const area = path + ` L${coords[coords.length-1].x.toFixed(1)},${h-pad*0.7} L${coords[0].x.toFixed(1)},${h-pad*0.7} Z`;
+  const gridY = [0,0.25,0.5,0.75,1].map(f=> h-pad*0.7 - f*(h-pad*1.4));
+  let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">`;
+  gridY.forEach(y=>{ svg += `<line x1="${pad}" y1="${y.toFixed(1)}" x2="${w-8}" y2="${y.toFixed(1)}" stroke="#eef3ef" stroke-width="1"/>`; });
+  svg += `<path d="${area}" fill="url(#lg1)" opacity="0.5"/>`;
+  svg += `<defs><linearGradient id="lg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2e9153" stop-opacity="0.35"/><stop offset="100%" stop-color="#2e9153" stop-opacity="0.02"/></linearGradient></defs>`;
+  svg += `<path class="chart-path" d="${path}" fill="none" stroke="#1b5e3a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>`;
+  coords.forEach((c,i)=>{ svg += `<circle class="chart-dot" style="animation-delay:${(1.2+i*0.08).toFixed(2)}s" cx="${c.x.toFixed(1)}" cy="${c.y.toFixed(1)}" r="3.6" fill="#fff" stroke="#1b5e3a" stroke-width="2"/>`; });
+  coords.forEach(c=>{ svg += `<text x="${c.x.toFixed(1)}" y="${h-8}" font-size="10.5" fill="#5b6b62" text-anchor="middle">${c.w.replace('Week','W')}</text>`; });
+  svg += `</svg>`;
+  return svg;
+}
+
+function svgBarChart(categories, series){
+  const w = 520, h = 220, pad=34;
+  const maxV = Math.max(10, ...series.flatMap(s=>s.values)) * 1.2;
+  const groupW = (w - pad*1.5) / categories.length;
+  const barW = Math.min(16, groupW/(series.length+1.4));
+  let svg = `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}">`;
+  [0,0.25,0.5,0.75,1].forEach(f=>{
+    const y = h-pad - f*(h-pad*1.6);
+    svg += `<line x1="${pad}" y1="${y.toFixed(1)}" x2="${w-6}" y2="${y.toFixed(1)}" stroke="#eef3ef" stroke-width="1"/>`;
+  });
+  categories.forEach((cat,i)=>{
+    const gx = pad + i*groupW + groupW/2;
+    series.forEach((s,si)=>{
+      const val = s.values[i];
+      const bh = (val/maxV)*(h-pad*1.6);
+      const bx = gx - (series.length*barW)/2 + si*barW + 2;
+      const by = h-pad-bh;
+      const delay = (i*series.length+si)*0.04;
+      svg += `<rect class="bar-rect" style="animation-delay:${delay.toFixed(2)}s" x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${(barW-3).toFixed(1)}" height="${bh.toFixed(1)}" rx="3" fill="${s.color}"/>`;
+    });
+    svg += `<text x="${gx.toFixed(1)}" y="${h-10}" font-size="10.5" fill="#5b6b62" text-anchor="middle">${cat}</text>`;
+  });
+  svg += `</svg>`;
+  return svg;
+}
+
+function svgDonut(segments){
+  const size=150, r=54, cx=size/2, cy=size/2, sw=20;
+  const total = segments.reduce((s,x)=>s+x.value,0) || 1;
+  let acc = -90; let segIdx = 0;
+  let svg = `<svg viewBox="0 0 ${size} ${size}" width="150" height="150">`;
+  svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#eef3ef" stroke-width="${sw}"/>`;
+  segments.forEach(seg=>{
+    const frac = seg.value/total;
+    const deg = frac*360;
+    const large = deg>180?1:0;
+    const startRad = acc*Math.PI/180, endRad=(acc+deg)*Math.PI/180;
+    const x1 = cx + r*Math.cos(startRad), y1 = cy + r*Math.sin(startRad);
+    const x2 = cx + r*Math.cos(endRad), y2 = cy + r*Math.sin(endRad);
+    if(frac>0.001){
+      svg += `<path class="donut-seg" style="animation-delay:${(segIdx*0.12).toFixed(2)}s" d="M${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large} 1 ${x2.toFixed(2)},${y2.toFixed(2)}" fill="none" stroke="${seg.color}" stroke-width="${sw}" stroke-linecap="butt"/>`;
+    }
+    acc += deg; segIdx++;
+  });
+  const pct = Math.round((segments[0].value/total)*100);
+  svg += `<text x="${cx}" y="${cy-2}" text-anchor="middle" font-size="20" font-weight="700" fill="#16241c" font-family="Iowan Old Style, Georgia, serif">${pct}%</text>`;
+  svg += `<text x="${cx}" y="${cy+15}" text-anchor="middle" font-size="9.5" fill="#5b6b62">${segments[0].label}</text>`;
+  svg += `</svg>`;
+  return svg;
+}
+
+/* ======================= RENDER: MARKETING PAGES ======================= */
+function renderTopNav(active){
+  return `
+  <div class="topnav">
+    <div class="brand">${ICONS.leaf}<span style="color:var(--green-600)">CropVision</span></div>
+    <nav class="sans">
+      <a onclick="goTo('home')" style="${active==='home'?'border-color:var(--green-400)':''}">Home</a>
+      <a onclick="goTo('dashboard')" style="${active==='monitoring'?'border-color:var(--green-400)':''}">Monitoring</a>
+      <a onclick="goTo('classification')" style="${active==='classification'?'border-color:var(--green-400)':''}">Classification</a>
+      <a onclick="goTo('about')" style="${active==='about'?'border-color:var(--green-400)':''}">About</a>
+      <a onclick="goTo('about')">Contact</a>
+    </nav>
+    <div class="cta">
+      <button class="btn btn-primary" onclick="goTo('dashboard')">Open App</button>
+    </div>
+  </div>`;
+}
+
+function renderHome(){
+  return `
+  ${renderTopNav('home')}
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-anim">
+        <div class="eyebrow sans">PRECISION AGRICULTURE, MADE VISUAL</div>
+        <h1>Smarter Monitoring.<span class="accent">Better Harvest.</span></h1>
+        <p class="lede">An image processing-based system for real-time plant growth monitoring and automated ripeness classification for registered crop varieties.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="goTo('dashboard')">Get Started →</button>
+          <button class="btn btn-ghost" onclick="goTo('about')">Learn More</button>
+        </div>
+      </div>
+      <div class="hero-art">
+        <svg viewBox="0 0 400 300" width="100%" height="100%">
+          <defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2c5a3a"/><stop offset="100%" stop-color="#173a26"/></linearGradient></defs>
+          <rect width="400" height="300" fill="url(#hg)"/>
+          <g opacity="0.9">
+            <circle cx="150" cy="150" r="34" fill="#c9482f"/>
+            <circle cx="195" cy="170" r="28" fill="#d9583a"/>
+            <circle cx="165" cy="195" r="22" fill="#b53e28"/>
+            <path d="M150 118 q6 -14 20 -12" stroke="#3fae63" stroke-width="4" fill="none"/>
+          </g>
+          <rect x="118" y="96" width="112" height="112" rx="6" fill="none" stroke="#eafff0" stroke-width="1.4" opacity="0.85"/>
+        </svg>
+        <div class="scan-tag sans"><span class="dot"></span><b>Tomato</b>Ripeness: <b style="display:inline;color:var(--red)">Ripe</b><br>Confidence: 94%</div>
+      </div>
+    </div>
+    <div class="feat-strip">
+      <div class="feat-card"><div class="ico" style="color:var(--green-700)">${ICONS.leaf}</div><h4>Growth Monitoring</h4><p>Track plant development using computer vision.</p></div>
+      <div class="feat-card"><div class="ico" style="color:var(--green-700)">${ICONS.camera}</div><h4>Ripeness Classification</h4><p>Automated crop ripeness detection.</p></div>
+      <div class="feat-card"><div class="ico" style="color:var(--green-700)">${ICONS.chart}</div><h4>Data Insights</h4><p>View growth trends and harvest recommendations.</p></div>
+      <div class="feat-card"><div class="ico" style="color:var(--green-700)">${ICONS.leaf}</div><h4>Efficient Harvesting</h4><p>Support better decisions for farmers.</p></div>
+    </div>
+    <div class="strip-caption sans">Precision Agriculture Through Image Processing</div>
+  </div>
+  `;
+}
+
+function renderAbout(){
+  return `
+  ${renderTopNav('about')}
+  <div class="about-section">
+    <div class="eyebrow sans">ABOUT CROPVISION</div>
+    <h2>Our Mission</h2>
+    <p>To develop an intelligent, image processing-based system that helps farmers monitor plant growth and classify crop ripeness automatically, for more efficient and sustainable harvesting.</p>
+    <div class="pillars">
+      <div class="pillar"><div class="ico" style="color:var(--green-700)">${ICONS.leaf}</div><h4>Innovation</h4></div>
+      <div class="pillar"><div class="ico" style="color:var(--green-700)">${ICONS.grid}</div><h4>Precision</h4></div>
+      <div class="pillar"><div class="ico" style="color:var(--green-700)">${ICONS.chart}</div><h4>Sustainability</h4></div>
+      <div class="pillar"><div class="ico" style="color:var(--green-700)">${ICONS.gear}</div><h4>Efficiency</h4></div>
+    </div>
+  </div>
+  <div class="footer-note">Growing Smarter, Together. · CropVision — data stored locally in this app's persistent storage.</div>
+  `;
+}
+
+/* ======================= RENDER: APP SHELL ======================= */
+function sideLinks(active){
+  const items = [
+    {k:'dashboard', label:'Dashboard', ic:ICONS.grid},
+    {k:'monitoring', label:'Plant Monitoring', ic:ICONS.leaf},
+    {k:'classification', label:'Ripeness Classification', ic:ICONS.camera},
+    {k:'records', label:'Crop Records', ic:ICONS.list},
+    {k:'analytics', label:'Analytics', ic:ICONS.chart},
+    {k:'harvest', label:'Harvest Recommendations', ic:ICONS.bulb},
+    {k:'settings', label:'Settings', ic:ICONS.gear},
+  ];
+  return items.map(it=>`
+    <a class="side-link ${active===it.k?'active':''}" onclick="goTo('${it.k}')">
+      <span class="ic">${it.ic}</span><span>${it.label}</span>
+    </a>`).join('');
+}
+
+function renderShell(active, contentHtml){
+  return `
+  <div class="app-shell">
+    <div class="sidebar">
+      <div class="brand">${ICONS.leaf}<span>CropVision</span></div>
+      <div class="user">
+        <div class="av">${state.settings.farmerName.split(' ').map(x=>x[0]).slice(0,2).join('')}</div>
+        <div><div class="name">${state.settings.farmerName}</div><div class="role">Farmer</div></div>
+      </div>
+      ${sideLinks(active)}
+      <div class="side-bottom">
+        <a class="side-link" onclick="goTo('home')"><span class="ic">🏠</span><span>Back to Home</span></a>
+      </div>
+    </div>
+    <div class="main">${contentHtml}</div>
+  </div>`;
+}
+
+/* ---------- Dashboard ---------- */
+function renderDashboard(){
+  const recent = [...state.records].slice(0,4);
+  const content = `
+    <div class="page-head">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Welcome back, ${state.settings.farmerName.split(' ')[0]}! Here's the latest update on your crops.</p>
+      </div>
+      <div class="weather-chip">☀️ <div><b>28°C</b><div style="font-size:11.5px">Balamban, Cebu</div></div></div>
+    </div>
+    <div class="grid-4" style="margin-bottom:18px;">
+      <div class="stat-card"><div class="ic" style="background:var(--green-100);color:var(--green-700)">${ICONS.leaf}</div><div><div class="num" data-count="${activePlants()}">0</div><div class="lbl">Active Plants</div></div></div>
+      <div class="stat-card"><div class="ic" style="background:#fdeceb;color:var(--red)">🍅</div><div><div class="num" data-count="${ripeCropsCount()}">0</div><div class="lbl">Ripe Crops</div></div></div>
+      <div class="stat-card"><div class="ic" style="background:#eaf0fd;color:#3454c9">${ICONS.grid}</div><div><div class="num" data-count="${monitoringPlots()}">0</div><div class="lbl">Monitoring Plots</div></div></div>
+      <div class="stat-card"><div class="ic" style="background:var(--green-100);color:var(--green-700)">${ICONS.chart}</div><div><div class="num" data-count="${state.records.length}">0</div><div class="lbl">Registered Varieties</div></div></div>
+    </div>
+    <div class="card">
+      <div class="card-flex-head"><h3>Recent Crop Status</h3><a class="sans" style="font-size:13px;color:var(--green-700);font-weight:700;cursor:pointer" onclick="goTo('records')">View All →</a></div>
+      ${recent.length ? `<div class="thumb-grid">${recent.map(r=>`
+        <div class="thumb">
+          <div class="img" style="background:${r.crop==='Tomato' ? 'linear-gradient(160deg,#e8f5ec,#bfe3cb)':'linear-gradient(160deg,#efe6f8,#cbb8e6)'};display:flex;align-items:center;justify-content:center;font-size:30px;">${cropEmoji(r.crop)}</div>
+          <div class="cap"><div class="name">${r.crop}</div><div class="tag ${r.ripeness==='Ripe'?'tag-ripe':r.ripeness==='Near Ripe'?'tag-near':'tag-unripe'}" style="margin-top:3px">${r.ripeness}</div><div style="font-size:11px;color:var(--ink-soft);margin-top:4px;">Day ${daysSince(r.datePlanted)}</div></div>
+        </div>`).join('')}</div>` : `<div class="empty"><div class="ic">🌱</div>No crop records yet. Add one from Crop Records.</div>`}
+    </div>
+  `;
+  return renderShell('dashboard', content);
+}
+
+/* ---------- Plant Monitoring ---------- */
+function renderMonitoring(){
+  const cropRecs = state.records.filter(r=>r.crop===state.monitorCrop);
+  const rec = cropRecs.find(r=>r.id===state.selectedRecordId) || cropRecs[0];
+  const content = `
+    <div class="page-head">
+      <div><h1>Plant Growth Monitoring</h1><p>Track the growth and health of your plants using image processing.</p></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline btn-sm" onclick="handleUploadClick('monitor')">${ICONS.camera} Upload Image</button>
+        <input id="monitor-upload" type="file" accept="image/*" style="display:none" onchange="handleMonitorUpload(event)">
+      </div>
+    </div>
+    <div class="tabs sans">
+      <button class="tab-btn ${state.monitorCrop==='Tomato'?'active':''}" onclick="setMonitorCrop('Tomato')">Tomato</button>
+      <button class="tab-btn ${state.monitorCrop==='Eggplant'?'active':''}" onclick="setMonitorCrop('Eggplant')">Eggplant</button>
+    </div>
+    ${!rec ? `<div class="card empty"><div class="ic">🌱</div>No ${state.monitorCrop} records yet. Add one in Crop Records.</div>` : `
+    <div class="grid-2">
+      <div class="card">
+        <h3>${rec.variety}</h3>
+        <div class="upload-box" style="min-height:220px;">
+          ${rec._img ? `<img src="${rec._img}"/>` : `<div class="hint"><b>${cropEmoji(rec.crop)} ${rec.crop} plant</b>Upload a photo above to visually track this plant</div>`}
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
+          ${cropRecs.map(r=>`<button class="btn btn-sm ${r.id===rec.id?'btn-primary':'btn-ghost'}" onclick="selectMonitorRecord('${r.id}')">${r.variety}</button>`).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-flex-head"><h3>Growth Analysis</h3><button class="btn btn-outline btn-sm" onclick="openLogModal('${rec.id}')">+ Log Measurement</button></div>
+        <div class="sans" style="display:flex;flex-direction:column;gap:12px;font-size:14px;">
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-soft)">Plant Height</span><b>${rec.height} cm</b></div>
+          <div style="display:flex;justify-content:space-between;"><span style="color:var(--ink-soft)">Leaf Count</span><b>${rec.leafCount} leaves</b></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--ink-soft)">Growth Stage</span>${tagFor('stage', rec.growthStage)}</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="color:var(--ink-soft)">Health Status</span>${tagFor('health', rec.healthStatus)}</div>
+        </div>
+        <h3 style="margin-top:20px;">Growth Trend (height, cm)</h3>
+        ${svgLineChart(rec.trend)}
+      </div>
+    </div>`}
+  `;
+  return renderShell('monitoring', content);
+}
+window.setMonitorCrop = (c)=>{ state.monitorCrop=c; state.selectedRecordId=null; render(); };
+window.selectMonitorRecord = (id)=>{ state.selectedRecordId=id; render(); };
+window.handleUploadClick = (ctx)=>{ document.getElementById(ctx+'-upload').click(); };
+window.handleMonitorUpload = (ev)=>{
+  const file = ev.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = async ()=>{
+    const cropRecs = state.records.filter(r=>r.crop===state.monitorCrop);
+    const rec = cropRecs.find(r=>r.id===state.selectedRecordId) || cropRecs[0];
+    if(rec){ rec._img = reader.result; render(); showToast('Image attached to '+rec.variety); }
+  };
+  reader.readAsDataURL(file);
+};
+
+function openLogModal(recordId){ state.modal = {type:'log', recordId}; render(); }
+window.openLogModal = openLogModal;
+
+/* ---------- Ripeness Classification ---------- */
+function renderClassification(){
+  const history = state.classifications.filter(c=>c.crop===state.classifyCrop).slice(0,4);
+  const lc = state.lastClassification;
+  const content = `
+    <div class="page-head">
+      <div><h1>Ripeness Classification</h1><p>Upload or capture an image to identify crop ripeness stage automatically.</p></div>
+    </div>
+    <div class="tabs sans">
+      <button class="tab-btn ${state.classifyCrop==='Tomato'?'active':''}" onclick="setClassifyCrop('Tomato')">Tomato</button>
+      <button class="tab-btn ${state.classifyCrop==='Eggplant'?'active':''}" onclick="setClassifyCrop('Eggplant')">Eggplant</button>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-flex-head"><h3>Image Input</h3>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="handleUploadClick('classify')">Upload Image</button>
+            <input id="classify-upload" type="file" accept="image/*" capture="environment" style="display:none" onchange="handleClassifyUpload(event)">
+          </div>
+        </div>
+        <div class="upload-box" id="classify-box">
+          ${state.classifyProcessing ? `
+            <img src="${state.classifyProcessing._img}" style="opacity:.5;"/>
+            <div class="scan-overlay"><div class="scan-line"></div></div>
+            <div class="hint analyzing" style="position:relative;z-index:2;background:rgba(255,255,255,.82);padding:10px 16px;border-radius:9px;"><b>Analyzing image…</b>Running color-based ripeness analysis</div>
+          ` : lc && lc._img ? `<img src="${lc._img}"/>` : `<div class="hint"><b>${cropEmoji(state.classifyCrop)} No image yet</b>Upload a clear photo of a single ${state.classifyCrop.toLowerCase()} to classify its ripeness by color analysis.</div>`}
+        </div>
+        ${history.length ? `<div class="thumb-grid">${history.map(h=>`
+          <div class="thumb" style="cursor:pointer" onclick="viewHistory('${h.id}')">
+            <div class="img" style="background-image:url(${h._img})"></div>
+            <div class="cap"><div class="tag ${h.ripeness==='Ripe'?'tag-ripe':h.ripeness==='Near Ripe'?'tag-near':'tag-unripe'}">${h.ripeness}</div></div>
+          </div>`).join('')}</div>` : ''}
+      </div>
+      <div class="card">
+        <h3>Classification Result</h3>
+        ${state.classifyProcessing ? `<div class="empty analyzing"><div class="ic">🔎</div>Analyzing colors and computing ripeness…</div>` : !lc ? `<div class="empty"><div class="ic">📷</div>Upload an image to see the ripeness classification here.</div>` : `
+        <div class="rec-card">
+          <div class="ic-circle" style="background:${lc.ripeness==='Ripe'?'#fdeceb':lc.ripeness==='Near Ripe'?'#fdf3e3':'var(--green-100)'};">${cropEmoji(lc.crop)}</div>
+          <div>
+            <div class="sans" style="font-size:13px;color:var(--ink-soft)">Crop Variety: ${lc.crop}</div>
+            <div style="font-size:13px;color:var(--ink-soft);margin-top:2px;">Ripeness Stage</div>
+            <h2 style="font-size:24px;color:${lc.ripeness==='Ripe'?'var(--red)':lc.ripeness==='Near Ripe'?'var(--amber)':'var(--green-700)'}">${lc.ripeness}</h2>
+          </div>
+        </div>
+        <div class="sans" style="font-size:12.5px;color:var(--ink-soft);margin-top:14px;">Confidence</div>
+        <div class="confidence-bar"><div class="confidence-fill" style="--target:${lc.confidence}%"></div></div>
+        <div class="sans" style="font-size:12.5px;font-weight:700;text-align:right;">${lc.confidence}%</div>
+        <div class="card sans" style="background:var(--green-50);border:none;margin-top:14px;padding:14px 16px;">
+          <b style="font-size:13.5px;">${lc.ripeness==='Ripe' ? 'Ready for harvest!' : lc.ripeness==='Near Ripe' ? 'Almost there' : 'Keep monitoring'}</b>
+          <div style="font-size:12.5px;color:var(--ink-soft);margin-top:2px;">${lc.ripeness==='Ripe' ? 'Best quality and flavor.' : lc.ripeness==='Near Ripe' ? 'Harvest within a few days for peak quality.' : 'Not yet ready — continue monitoring growth.'}</div>
+          <ul class="suggest-list">
+            <li>${lc.ripeness==='Ripe' ? 'Optimal for consumption' : lc.ripeness==='Near Ripe' ? 'Good for early harvest orders' : 'Allow more time on the plant'}</li>
+            <li>${lc.ripeness==='Unripe' ? 'Protect from pests while maturing' : 'Suitable for market'}</li>
+            <li>${lc.ripeness==='Ripe' ? 'High nutritional value' : 'Recheck in a few days'}</li>
+          </ul>
+        </div>
+        <div class="modal-actions" style="justify-content:flex-start;margin-top:16px;">
+          <button class="btn btn-primary btn-sm" onclick="saveClassificationToRecords()">Save to Records</button>
+        </div>`}
+      </div>
+    </div>
+  `;
+  return renderShell('classification', content);
+}
+window.setClassifyCrop = (c)=>{ state.classifyCrop=c; state.lastClassification=null; render(); };
+
+function classifyImageColors(cropType, imgEl){
+  const canvas = document.createElement('canvas');
+  const w = 60, h = 60;
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(imgEl, 0, 0, w, h);
+  let data;
+  try{ data = ctx.getImageData(0,0,w,h).data; } catch(e){ data = null; }
+  let r=0,g=0,b=0,n=0;
+  if(data){
+    for(let i=0;i<data.length;i+=4){ r+=data[i]; g+=data[i+1]; b+=data[i+2]; n++; }
+    r/=n; g/=n; b/=n;
+  } else { r=150;g=90;b=90; }
+
+  if(cropType==='Tomato'){
+    const redRatio = r/(r+g+b+0.0001);
+    let ripeness, confidence;
+    if(redRatio > 0.40 && r > g*1.15){ ripeness='Ripe'; confidence = Math.min(98, Math.round(80 + (redRatio-0.40)*180)); }
+    else if(redRatio > 0.35){ ripeness='Near Ripe'; confidence = Math.min(95, Math.round(72 + (redRatio-0.35)*160)); }
+    else { ripeness='Unripe'; confidence = Math.min(95, Math.round(75 + (0.35-Math.min(redRatio,0.35))*140)); }
+    return {ripeness, confidence: Math.max(70, confidence)};
+  } else {
+    const max = Math.max(r,g,b), min = Math.min(r,g,b);
+    const lightness = (max+min)/2/255;
+    let hue = 0;
+    if(max!==min){
+      const d = max-min;
+      if(max===r) hue = ((g-b)/d) % 6;
+      else if(max===g) hue = (b-r)/d + 2;
+      else hue = (r-g)/d + 4;
+      hue *= 60; if(hue<0) hue+=360;
+    }
+    const isPurpleHue = hue > 250 && hue < 335;
+    let ripeness, confidence;
+    if(isPurpleHue && lightness < 0.32){ ripeness='Ripe'; confidence = Math.min(98, Math.round(85 + (0.32-lightness)*100)); }
+    else if(isPurpleHue && lightness < 0.5){ ripeness='Near Ripe'; confidence = Math.min(93, Math.round(75 + (0.5-lightness)*80)); }
+    else { ripeness='Unripe'; confidence = Math.min(93, Math.round(74 + Math.max(0,lightness-0.5)*80)); }
+    return {ripeness, confidence: Math.max(70, confidence)};
+  }
+}
+
+window.handleClassifyUpload = (ev)=>{
+  const file = ev.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const dataUrl = reader.result;
+    state.classifyProcessing = { _img: dataUrl };
+    state.lastClassification = null;
+    render();
+    const img = new Image();
+    img.onload = ()=>{
+      setTimeout(async ()=>{
+        const result = classifyImageColors(state.classifyCrop, img);
+        const record = {
+          id: uid(), crop: state.classifyCrop, ripeness: result.ripeness, confidence: result.confidence,
+          date: new Date().toISOString().slice(0,10), _img: dataUrl
+        };
+        state.classifyProcessing = null;
+        state.lastClassification = record;
+        state.classifications.unshift({...record});
+        state.classifications = state.classifications.slice(0,20);
+        await saveClassifications();
+        render();
+        showToast('Classified as '+result.ripeness+' ('+result.confidence+'% confidence)');
+      }, 900);
+    };
+    img.src = dataUrl;
+  };
+  reader.readAsDataURL(file);
+};
+window.viewHistory = (id)=>{
+  const h = state.classifications.find(c=>c.id===id);
+  if(h){ state.lastClassification = h; render(); }
+};
+window.saveClassificationToRecords = async ()=>{
+  const lc = state.lastClassification; if(!lc) return;
+  const existing = state.records.find(r=>r.crop===lc.crop && r.ripeness!=='Ripe' && !r._matched);
+  if(existing){
+    existing.ripeness = lc.ripeness;
+    existing.status = lc.ripeness==='Ripe' ? 'Ready' : 'Monitoring';
+  } else {
+    state.records.push({
+      id: uid(), crop: lc.crop, variety:'New Sample', datePlanted:new Date().toISOString().slice(0,10),
+      plantCount:1, growthStage: lc.ripeness==='Ripe'?'Fruiting':'Vegetative', ripeness: lc.ripeness,
+      status: lc.ripeness==='Ripe'?'Ready':'Monitoring', height: lc.ripeness==='Ripe'?55:20, leafCount:14,
+      healthStatus:'Healthy', trend:[{w:'Week 1',h:8}]
+    });
+  }
+  await saveRecords();
+  showToast('Saved classification to Crop Records');
+  render();
+};
+
+/* ---------- Crop Records ---------- */
+function renderRecords(){
+  const content = `
+    <div class="page-head">
+      <div><h1>Crop Records</h1><p>Manage and view all monitored crops.</p></div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-outline btn-sm" onclick="exportCSV()">⤓ Export CSV</button>
+        <button class="btn btn-primary btn-sm" onclick="openAddModal()">+ Add New Record</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:auto;">
+      ${state.records.length ? `
+      <table>
+        <thead><tr><th>Crop</th><th>Variety</th><th>Date Planted</th><th>Growth Stage</th><th>Ripeness</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          ${state.records.map(r=>`
+            <tr>
+              <td>${cropEmoji(r.crop)} ${r.crop}</td>
+              <td>${r.variety}</td>
+              <td>${fmtDate(r.datePlanted)}</td>
+              <td>${tagFor('stage', r.growthStage)}</td>
+              <td>${tagFor('ripeness', r.ripeness)}</td>
+              <td>${tagFor('status', r.status)}</td>
+              <td><div class="row-actions">
+                <button class="icon-btn" title="Edit" onclick="openEditModal('${r.id}')">✎</button>
+                <button class="icon-btn" title="Delete" onclick="deleteRecord('${r.id}')">🗑</button>
+              </div></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>` : `<div class="empty"><div class="ic">🌱</div>No records yet — add your first crop.</div>`}
+    </div>
+  `;
+  return renderShell('records', content);
+}
+window.exportCSV = ()=>{
+  const headers = ['Crop','Variety','Date Planted','Plant Count','Growth Stage','Ripeness','Status','Height(cm)','Leaf Count','Health'];
+  const rows = state.records.map(r=>[r.crop,r.variety,r.datePlanted,r.plantCount,r.growthStage,r.ripeness,r.status,r.height,r.leafCount,r.healthStatus]);
+  const csv = [headers, ...rows].map(row=>row.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='cropvision_records.csv'; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Exported crop_records.csv');
+};
+window.openAddModal = ()=>{ state.modal = {type:'add'}; render(); };
+window.openEditModal = (id)=>{ state.modal = {type:'edit', id}; render(); };
+window.deleteRecord = async (id)=>{
+  if(!confirm('Delete this crop record? This cannot be undone.')) return;
+  state.records = state.records.filter(r=>r.id!==id);
+  await saveRecords(); render(); showToast('Record deleted');
+};
+
+/* ---------- Analytics ---------- */
+function renderAnalytics(){
+  const tomatoAvgs = weeklyAverage('Tomato');
+  const eggplantAvgs = weeklyAverage('Eggplant');
+  const weeks = ['W1','W2','W3','W4','W5','W6'];
+  const total = state.records.reduce((s,r)=>s+r.plantCount,0) || 1;
+  const ripe = state.records.filter(r=>r.ripeness==='Ripe').reduce((s,r)=>s+r.plantCount,0);
+  const near = state.records.filter(r=>r.ripeness==='Near Ripe').reduce((s,r)=>s+r.plantCount,0);
+  const unripe = total - ripe - near;
+
+  const tabContent = state.analyticsTab==='growth' ? `
+    <div class="card">
+      <h3>Crop Growth Overview (avg height, cm)</h3>
+      ${svgBarChart(weeks, [
+        {name:'Tomato', color:'#1b5e3a', values:tomatoAvgs},
+        {name:'Eggplant', color:'#7a3fc9', values:eggplantAvgs}
+      ])}
+      <div class="sans" style="display:flex;gap:18px;font-size:12.5px;margin-top:8px;">
+        <span><span class="legend-dot" style="background:#1b5e3a"></span>Tomato</span>
+        <span><span class="legend-dot" style="background:#7a3fc9"></span>Eggplant</span>
+      </div>
+    </div>` : state.analyticsTab==='ripeness' ? `
+    <div class="card">
+      <h3>Ripeness Classification Results</h3>
+      <div class="donut-wrap">
+        ${svgDonut([{label:'Ripe Crops', value:ripe, color:'#c9482f'},{label:'Near Ripe', value:near, color:'#e08e2b'},{label:'Unripe', value:unripe, color:'#2e9153'}])}
+        <div class="sans" style="flex:1;">
+          <div class="legend-row"><span><span class="legend-dot" style="background:#c9482f"></span>Ripe</span><b>${Math.round(ripe/total*100)}%</b></div>
+          <div class="legend-row"><span><span class="legend-dot" style="background:#e08e2b"></span>Near Ripe</span><b>${Math.round(near/total*100)}%</b></div>
+          <div class="legend-row"><span><span class="legend-dot" style="background:#2e9153"></span>Unripe</span><b>${Math.round(unripe/total*100)}%</b></div>
+        </div>
+      </div>
+    </div>` : `
+    <div class="card">
+      <h3>Harvest Prediction</h3>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        ${state.records.map(r=>{
+          const hw = harvestWindow(r.ripeness);
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:var(--green-50);border-radius:10px;">
+            <div class="sans"><b>${cropEmoji(r.crop)} ${r.crop} — ${r.variety}</b><div style="font-size:12px;color:var(--ink-soft)">${r.growthStage} · ${r.ripeness}</div></div>
+            <div class="sans" style="text-align:right;"><b style="color:var(--green-700)">${hw.label}</b></div>
+          </div>`;
+        }).join('') || `<div class="empty">No records to predict from.</div>`}
+      </div>
+    </div>`;
+
+  const content = `
+    <div class="page-head"><div><h1>Analytics & Insights</h1><p>Understand growth trends and ripeness patterns across all your crops.</p></div></div>
+    <div class="tabs sans">
+      <button class="tab-btn ${state.analyticsTab==='growth'?'active':''}" onclick="setAnalyticsTab('growth')">Growth Trends</button>
+      <button class="tab-btn ${state.analyticsTab==='ripeness'?'active':''}" onclick="setAnalyticsTab('ripeness')">Ripeness Distribution</button>
+      <button class="tab-btn ${state.analyticsTab==='harvest'?'active':''}" onclick="setAnalyticsTab('harvest')">Harvest Prediction</button>
+    </div>
+    ${tabContent}
+  `;
+  return renderShell('analytics', content);
+}
+window.setAnalyticsTab = (t)=>{ state.analyticsTab=t; render(); };
+function weeklyAverage(crop){
+  const recs = state.records.filter(r=>r.crop===crop);
+  const weeks = 6;
+  const out = [];
+  for(let i=0;i<weeks;i++){
+    const vals = recs.map(r=> (r.trend[i]? r.trend[i].h : r.trend[r.trend.length-1]?.h) || 0).filter(v=>v!==undefined);
+    out.push(vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0);
+  }
+  return out;
+}
+
+/* ---------- Harvest Recommendations ---------- */
+function renderHarvest(){
+  const byCrop = {};
+  state.records.forEach(r=>{ (byCrop[r.crop] = byCrop[r.crop]||[]).push(r); });
+  const cards = Object.keys(byCrop).map(crop=>{
+    const recs = byCrop[crop];
+    const ripest = recs.reduce((best,r)=> (harvestWindow(r.ripeness).days < harvestWindow(best.ripeness).days ? r : best), recs[0]);
+    const hw = harvestWindow(ripest.ripeness);
+    return `
+    <div class="card harvest-card">
+      <div class="top"><div class="ic" style="background:${crop==='Tomato'?'#fdeceb':'#efe6f8'};">${cropEmoji(crop)}</div><h3>${crop}</h3></div>
+      <div class="sans"><b style="color:var(--green-700)">Recommended Harvest: ${hw.label}</b>
+        <div style="font-size:12.5px;color:var(--ink-soft);margin-top:4px;">Based on ripeness across ${recs.length} registered ${recs.length===1?'variety':'varieties'} and growth-stage analysis.</div>
+      </div>
+      <button class="btn btn-outline btn-sm" style="align-self:flex-start;" onclick="toggleHarvestDetail('${crop}')">${state._harvestOpen===crop?'Hide Details':'View Details'}</button>
+      ${state._harvestOpen===crop ? `
+        <div style="border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px;">
+          ${recs.map(r=>`<div class="sans" style="display:flex;justify-content:space-between;font-size:13px;">
+            <span>${r.variety}</span>${tagFor('ripeness', r.ripeness)}
+          </div>`).join('')}
+        </div>` : ''}
+    </div>`;
+  }).join('');
+  const content = `
+    <div class="page-head"><div><h1>Harvest Recommendations</h1><p>AI-powered insights based on monitoring data.</p></div></div>
+    <div class="grid-4" style="grid-template-columns:repeat(2,1fr);">
+      ${cards || `<div class="card empty">No crop records yet.</div>`}
+    </div>
+  `;
+  return renderShell('harvest', content);
+}
+window.toggleHarvestDetail = (crop)=>{ state._harvestOpen = state._harvestOpen===crop ? null : crop; render(); };
+
+/* ---------- Settings ---------- */
+function renderSettings(){
+  const content = `
+    <div class="page-head"><div><h1>Settings</h1><p>Manage your profile and app data.</p></div></div>
+    <div class="card" style="max-width:480px;">
+      <h3>Profile</h3>
+      <div class="field"><label>Farmer Name</label><input id="settings-name" value="${state.settings.farmerName}"/></div>
+      <button class="btn btn-primary btn-sm" onclick="saveSettingsForm()">Save Changes</button>
+    </div>
+    <div class="card" style="max-width:480px;margin-top:18px;">
+      <h3>Data</h3>
+      <p class="sans" style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">All crop records and classification history are stored in this app's persistent storage and remain available next time you open it.</p>
+      <button class="btn btn-outline btn-sm" onclick="resetDemoData()">Reset to Demo Data</button>
+      <button class="btn btn-danger-text btn-sm" onclick="clearAllData()">Clear All Data</button>
+    </div>
+  `;
+  return renderShell('settings', content);
+}
+window.saveSettingsForm = async ()=>{
+  const val = document.getElementById('settings-name').value.trim();
+  if(val){ state.settings.farmerName = val; await saveSettings(); showToast('Profile updated'); render(); }
+};
+window.resetDemoData = async ()=>{
+  if(!confirm('Reset all crop records to the original demo data?')) return;
+  state.records = seedRecords(); await saveRecords(); render(); showToast('Demo data restored');
+};
+window.clearAllData = async ()=>{
+  if(!confirm('This will permanently delete all crop records and classification history. Continue?')) return;
+  state.records = []; state.classifications = []; state.lastClassification = null;
+  await saveRecords(); await saveClassifications(); render(); showToast('All data cleared');
+};
+
+/* ======================= MODAL ======================= */
+function renderModal(){
+  if(!state.modal) return '';
+  if(state.modal.type==='add' || state.modal.type==='edit'){
+    const editing = state.modal.type==='edit';
+    const r = editing ? state.records.find(x=>x.id===state.modal.id) : null;
+    return `
+    <div class="modal-overlay" onclick="closeModalIfOverlay(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <h3>${editing?'Edit Crop Record':'Add New Record'}</h3>
+        <div class="field"><label>Crop</label>
+          <select id="m-crop">
+            <option ${r&&r.crop==='Tomato'?'selected':''}>Tomato</option>
+            <option ${r&&r.crop==='Eggplant'?'selected':''}>Eggplant</option>
+          </select>
+        </div>
+        <div class="field"><label>Variety</label><input id="m-variety" value="${r?r.variety:''}" placeholder="e.g. Registered Variety C"/></div>
+        <div class="field"><label>Date Planted</label><input id="m-date" type="date" value="${r?r.datePlanted:new Date().toISOString().slice(0,10)}"/></div>
+        <div class="field"><label>Plant Count</label><input id="m-count" type="number" min="1" value="${r?r.plantCount:1}"/></div>
+        <div class="field"><label>Growth Stage</label>
+          <select id="m-stage">
+            ${['Seedling','Vegetative','Flowering','Fruiting'].map(s=>`<option ${r&&r.growthStage===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field"><label>Ripeness</label>
+          <select id="m-ripeness">
+            ${['Unripe','Near Ripe','Ripe'].map(s=>`<option ${r&&r.ripeness===s?'selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary btn-sm" onclick="submitRecordForm(${editing? `'${r.id}'`:'null'})">${editing?'Save Changes':'Add Record'}</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(state.modal.type==='log'){
+    const rec = state.records.find(r=>r.id===state.modal.recordId);
+    return `
+    <div class="modal-overlay" onclick="closeModalIfOverlay(event)">
+      <div class="modal" onclick="event.stopPropagation()">
+        <h3>Log New Measurement — ${rec.variety}</h3>
+        <div class="field"><label>Plant Height (cm)</label><input id="m-height" type="number" value="${rec.height}"/></div>
+        <div class="field"><label>Leaf Count</label><input id="m-leaf" type="number" value="${rec.leafCount}"/></div>
+        <div class="field"><label>Health Status</label>
+          <select id="m-health">
+            <option ${rec.healthStatus==='Healthy'?'selected':''}>Healthy</option>
+            <option ${rec.healthStatus==='Needs Attention'?'selected':''}>Needs Attention</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary btn-sm" onclick="submitLogForm('${rec.id}')">Save Measurement</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  return '';
+}
+window.closeModal = ()=>{ state.modal=null; render(); };
+window.closeModalIfOverlay = (ev)=>{ if(ev.target.classList.contains('modal-overlay')) window.closeModal(); };
+
+window.submitRecordForm = async (id)=>{
+  const crop = document.getElementById('m-crop').value;
+  const variety = document.getElementById('m-variety').value.trim() || 'Unnamed Variety';
+  const datePlanted = document.getElementById('m-date').value;
+  const plantCount = Math.max(1, parseInt(document.getElementById('m-count').value)||1);
+  const growthStage = document.getElementById('m-stage').value;
+  const ripeness = document.getElementById('m-ripeness').value;
+  const status = ripeness==='Ripe' ? 'Ready' : 'Monitoring';
+
+  if(id){
+    const r = state.records.find(x=>x.id===id);
+    Object.assign(r, {crop,variety,datePlanted,plantCount,growthStage,ripeness,status});
+  } else {
+    state.records.push({
+      id: uid(), crop, variety, datePlanted, plantCount, growthStage, ripeness, status,
+      height: growthStage==='Fruiting'?55:growthStage==='Flowering'?35:growthStage==='Vegetative'?18:6,
+      leafCount: 10, healthStatus:'Healthy', trend:[{w:'Week 1', h:6}]
+    });
+  }
+  await saveRecords();
+  state.modal = null; render();
+  showToast(id ? 'Record updated' : 'Record added');
+};
+
+window.submitLogForm = async (id)=>{
+  const rec = state.records.find(r=>r.id===id);
+  const height = parseFloat(document.getElementById('m-height').value)||rec.height;
+  const leafCount = parseInt(document.getElementById('m-leaf').value)||rec.leafCount;
+  const healthStatus = document.getElementById('m-health').value;
+  rec.height = height; rec.leafCount = leafCount; rec.healthStatus = healthStatus;
+  rec.growthStage = stageFromHeight(height);
+  const weekNum = rec.trend.length+1;
+  rec.trend.push({w:'Week '+weekNum, h:height});
+  if(rec.trend.length>8) rec.trend = rec.trend.slice(-8);
+  await saveRecords();
+  state.modal = null; render();
+  showToast('Measurement logged — stage updated to '+rec.growthStage);
+};
+
+/* ======================= MAIN RENDER ======================= */
+function render(){
+  const root = document.getElementById('root');
+  let html = '';
+  if(!state.loaded){
+    root.innerHTML = `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-family:sans-serif;">Loading CropVision…</div>`;
+    return;
+  }
+  switch(state.page){
+    case 'home': html = renderHome(); break;
+    case 'about': html = renderAbout(); break;
+    case 'dashboard': html = renderDashboard(); break;
+    case 'monitoring': html = renderMonitoring(); break;
+    case 'classification': html = renderClassification(); break;
+    case 'records': html = renderRecords(); break;
+    case 'analytics': html = renderAnalytics(); break;
+    case 'harvest': html = renderHarvest(); break;
+    case 'settings': html = renderSettings(); break;
+    default: html = renderHome();
+  }
+  root.innerHTML = html + renderModal();
+  postRenderEffects();
+}
+
+function postRenderEffects(){
+  if(state.page==='dashboard'){
+    document.querySelectorAll('.num[data-count]').forEach(el=>{
+      const target = parseInt(el.getAttribute('data-count'),10)||0;
+      let start=null; const dur=650;
+      function step(ts){
+        if(!start) start=ts;
+        const p = Math.min(1,(ts-start)/dur);
+        el.textContent = Math.round(target*(1-Math.pow(1-p,3)));
+        if(p<1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+}
+
+/* ======================= INIT ======================= */
+(async function init(){
+  await loadAll();
+  render();
+})();
+</script>
+</body>
+</html>
